@@ -44,7 +44,7 @@ func main() {
 	flag.StringVar(&teamviewerid, "teamviewerid", "", "ID Teamviewer of Host to test")
 	flag.Parse()
 
-	if apiKey == "" || (host == "" && teamviewerid == "" ) {
+	if apiKey == "" || (host == "" && teamviewerid == "") {
 		fmt.Println("Please provide the TeamViewer API key and host to test or teamviewer id")
 		flag.Usage()
 		os.Exit(1)
@@ -122,10 +122,15 @@ func FindDeviceWithPropertyValue(devices []Device, propertyValue string, TestFun
 }
 
 func TestID(device Device, id string) bool {
-	return ("r" +id) == device.RemoteControlID
+	return ("r" + id) == device.RemoteControlID
 }
 
 func TestHostname(device Device, hostname string) bool {
-	match, _ := regexp.MatchString("\\d+_"+hostname, device.Alias)
+	match, _ := regexp.MatchString("\\d+_"+hostname+"$", device.Alias)
+	return match
+}
+
+func TestGlpiID(device Device, id string) bool {
+	match, _ := regexp.MatchString("^"+id+"_.+", device.Alias)
 	return match
 }
